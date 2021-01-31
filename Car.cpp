@@ -100,3 +100,92 @@ void TwoAxleCar::SetSpeed(uint8_t new_speed){
 //----------------
 //----------------
 //----------------
+TwoAxleSharpDriftCar::TwoAxleSharpDriftCar(IAxle *p_axle_forward, TwinEngineDrivingAxle *p_axle_backward):p_axle_forward_(p_axle_forward),p_axle_backward_(p_axle_backward){
+}
+//----------------
+void TwoAxleSharpDriftCar::SwitchMode(DrivingMode mode, bool try_activate){ //Указанный режим попытаться активировать или деактивировать
+  if(this->active_mode_ == (try_activate ? DrivingMode::STANDART : mode) ){ //Активировать можно только если сейчас STANDART, деактивировать только себя
+      this->active_mode_ = try_activate ? mode : DrivingMode::STANDART;
+  }
+}
+//----------------
+void TwoAxleSharpDriftCar::ActivateDrift(){
+  SwitchMode(DrivingMode::DRIFT, true);
+}
+//----------------
+void TwoAxleSharpDriftCar::DeactivateDrift(){
+  SwitchMode(DrivingMode::DRIFT, false);
+}
+//----------------
+void TwoAxleSharpDriftCar::ActivateSharp(){
+  SwitchMode(DrivingMode::SHARP, true);  
+}
+//----------------
+void TwoAxleSharpDriftCar::DeactivateSharp(){
+  SwitchMode(DrivingMode::SHARP, false);  
+}
+//----------------
+bool TwoAxleSharpDriftCar::IsDriftModeOn(){
+  return this->active_mode_ == DrivingMode::DRIFT;
+}
+//----------------
+bool TwoAxleSharpDriftCar::IsSharpModeOn(){
+  return this->active_mode_ == DrivingMode::SHARP;  
+}
+//----------------
+void TwoAxleSharpDriftCar::SetSpeedDifferenceInTurnBackAxle(int8_t new_speed_difference_in_turn){
+  this->p_axle_backward_->SetSpeedDifferenceInTurn(new_speed_difference_in_turn);
+}
+//----------------
+void TwoAxleSharpDriftCar::Stop(){
+  this->p_axle_forward_->Stop();
+  this->p_axle_backward_->Stop();
+}
+//----------------
+void TwoAxleSharpDriftCar::GoLeft(){
+  this->p_axle_forward_->GoLeft();
+  this->p_axle_backward_->Stop();
+}
+//----------------
+void TwoAxleSharpDriftCar::GoRight(){
+  this->p_axle_forward_->GoRight();
+  this->p_axle_backward_->Stop();
+}
+//----------------
+void TwoAxleSharpDriftCar::GoForward(){
+  this->p_axle_forward_->GoForward();
+  this->p_axle_backward_->GoForward();
+}
+//----------------
+void TwoAxleSharpDriftCar::GoBackward(){
+  this->p_axle_forward_->GoBackward();
+  this->p_axle_backward_->GoBackward();
+}
+//----------------
+void TwoAxleSharpDriftCar::GoForwardRight(){
+  this->p_axle_forward_->GoForwardRight();
+  this->p_axle_backward_->GoForwardRight();
+}
+//----------------
+void TwoAxleSharpDriftCar::GoForwardLeft(){
+  this->p_axle_forward_->GoForwardLeft();
+  this->p_axle_backward_->GoForwardLeft();
+}
+//----------------
+void TwoAxleSharpDriftCar::GoBackwardRight(){
+  this->p_axle_forward_->GoBackwardRight();
+  this->p_axle_backward_->GoBackwardRight();
+}
+//----------------
+void TwoAxleSharpDriftCar::GoBackwardLeft(){
+  this->p_axle_forward_->GoBackwardLeft();
+  this->p_axle_backward_->GoBackwardLeft();
+}
+//----------------
+void TwoAxleSharpDriftCar::SetSpeed(uint8_t new_speed){
+  this->p_axle_forward_->SetSpeed(new_speed);
+  this->p_axle_backward_->SetSpeed(new_speed);
+}
+//----------------
+//----------------
+//----------------

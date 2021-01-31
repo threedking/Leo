@@ -23,8 +23,8 @@ void TwinEngineDrivingAxle::SetTurn(int8_t new_turn){//-1 - влево, 1 - вп
 }
 //----------------
 void TwinEngineDrivingAxle::SetSpeed(uint8_t new_speed){  
-  this->p_motor_left_->SetSpeed(this->turn_<0 ? new_speed*this->speed_difference_in_turn_/100 : new_speed);
-  this->p_motor_right_->SetSpeed(this->turn_>0 ? new_speed*this->speed_difference_in_turn_/100 : new_speed);
+  this->p_motor_left_->SetSpeed(this->turn_<0 ? abs(static_cast<int>(new_speed)*this->speed_difference_in_turn_)/100 : new_speed);
+  this->p_motor_right_->SetSpeed(this->turn_>0 ? abs(static_cast<int>(new_speed)*this->speed_difference_in_turn_)/100 : new_speed);
   if(this->speed_difference_in_turn_ < 0){//Если разница скоростей в повороте отрицательная, то обратить направление внутреннего колеса
     if(this->turn_ < 0){
       this->p_motor_left_->SetDirection(this->is_going_forward_ ? false : true, this->is_going_forward_ ? true : false);
@@ -120,6 +120,10 @@ ServoSteeringAxle::ServoSteeringAxle(uint8_t new_pin_steering_servo, int16_t new
   }
 }
 //----------------
+ServoSteeringAxle::~ServoSteeringAxle(){
+  this->servo_.detach();
+}
+//----------------
 void ServoSteeringAxle::ApplyTurn(){  
   this->servo_.write(this->angle_);
 }
@@ -196,7 +200,7 @@ void ServoSteeringAxle::GoBackwardLeft(){
   this->TurnMaxLeft();
 }
 //----------------
-void SetSpeed(uint8_t new_speed){
+void ServoSteeringAxle::SetSpeed(uint8_t new_speed){
   
 }
 //----------------

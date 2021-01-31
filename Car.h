@@ -62,4 +62,52 @@ class TwoAxleCar: public ICar{
     void SetSpeed(uint8_t new_speed) override;
 };
 //----------------
+class TwoAxleSharpDriftCar: public ICar{
+  protected:
+    IAxle *p_axle_forward_=NULL;
+    TwinEngineDrivingAxle *p_axle_backward_=NULL;
+    
+    enum class DrivingMode : uint8_t{
+      STANDART,
+      SHARP,
+      DRIFT
+    };
+
+    DrivingMode active_mode_ = DrivingMode::STANDART;
+
+    /*
+    Если хотим повернуть влево, то
+      Если сейчас не повернуты влево(а прямо или вправо >30), то
+        Дрифтить или резко развернуться
+
+    Условие прекращение дрифта - отпустить газ или повернуть руль
+    */
+
+    void SwitchMode(DrivingMode mode, bool try_activate);//Указанный режим попытаться активировать или деактивировать    
+  public:
+    TwoAxleSharpDriftCar(IAxle *p_axle_forward, TwinEngineDrivingAxle *p_axle_backward);
+    virtual ~TwoAxleSharpDriftCar(){}
+    
+    void ActivateDrift();
+    void DeactivateDrift();
+    void ActivateSharp();
+    void DeactivateSharp();
+    
+    bool IsDriftModeOn();
+    bool IsSharpModeOn();
+
+    void SetSpeedDifferenceInTurnBackAxle(int8_t new_speed_difference_in_turn);
+    
+    void Stop() override;
+    void GoLeft() override;
+    void GoRight() override;
+    void GoForward() override;
+    void GoBackward() override;
+    void GoForwardRight() override;
+    void GoForwardLeft() override;
+    void GoBackwardRight() override;
+    void GoBackwardLeft() override;
+    void SetSpeed(uint8_t new_speed) override;
+};
+//----------------
 #endif
