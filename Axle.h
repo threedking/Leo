@@ -31,11 +31,18 @@ class TwinEngineDrivingAxle: public IAxle{
     IArduinoMotor *p_motor_right_=NULL;    
 
     uint8_t speed_=255;
-    int8_t speed_difference_in_turn_=25;//Процент(-100 - 100) отношения скорости внутреннего колеса к внешнему в повороте. Если <0, то направление противоположное
-    int8_t turn_=0;// -1 - влево, 0 - прямо, 1 - вправо. Если не прямо, то скорость колес разная (speed_difference_in_turn_)    
+    int8_t speed_difference_in_turn_=25;//Процент(-100 - 100) отношения скорости внутреннего колеса к внешнему в повороте. Если <0, то направление противоположное    
     bool is_going_forward_=true;//Запоминаем направление оси для отрицательной разницы скорости в повороте
+    
+    enum class Turn : uint8_t{// Если не прямо, то скорость колес разная (speed_difference_in_turn_)    
+      LEFT,
+      FRONT,
+      RIGHT
+    };
 
-    void SetTurn(int8_t new_turn);
+    Turn turn_= Turn::FRONT;
+
+    void SetTurn(Turn new_turn);
   public:
     TwinEngineDrivingAxle(IArduinoMotor *p_motor_left,IArduinoMotor *p_motor_right);
     virtual ~TwinEngineDrivingAxle();

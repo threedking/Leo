@@ -70,20 +70,45 @@ class TwoAxleSharpDriftCar: public ICar{
     enum class DrivingMode : uint8_t{
       STANDART,
       SHARP,
-      DRIFT
+      DRIFT,
+      SHARP_and_DRIFT
     };
 
     DrivingMode active_mode_ = DrivingMode::STANDART;
 
-    /*
+    /*    
+    КАК было:
     Если хотим повернуть влево, то
       Если сейчас не повернуты влево(а прямо или вправо >30), то
         Дрифтить или резко развернуться
 
     Условие прекращение дрифта - отпустить газ или повернуть руль
+
+    КАК будет:
+
+    Один метод будет вызываться во всех публичных методах управления и вызывать нужное.
+    Он будет проверять режим вождения и от этого запускать нужное поведение. Нет. Он будет вызывать метод по указателю.
+
+    Нужны методы реального поведения. Но не для всех: стоп, назад и вперед будут выполнять свои задачи, щелкая состояние
+    Нужны методы дрифта в стороны и резких поворотов в стороны
+
+    Вариант для резкого ИЛИ дрифтового режима:
+    Если была нажата команда вперед
+      Если была нажата команда вперед и в сторону      
+      Пока не была нажата команда стоп
+
+    Вариант для резкого И дрифтового режима:     
+      Есть bool is_sharping, is_drifting
+      
+      Если была нажата команда вперед, то is_sharping = is_drifting = false
+      Если 
+      
+    
     */
 
-    void SwitchMode(DrivingMode mode, bool try_activate);//Указанный режим попытаться активировать или деактивировать    
+    void SwitchMode(DrivingMode mode, bool try_activate);//Указанный режим попытаться активировать или деактивировать
+    void GoSharpOrDrift(bool is_forward, bool is_right, bool is_sharp);
+    
   public:
     TwoAxleSharpDriftCar(IAxle *p_axle_forward, TwinEngineDrivingAxle *p_axle_backward);
     virtual ~TwoAxleSharpDriftCar(){}

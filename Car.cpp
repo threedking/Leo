@@ -103,6 +103,14 @@ void TwoAxleCar::SetSpeed(uint8_t new_speed){
 TwoAxleSharpDriftCar::TwoAxleSharpDriftCar(IAxle *p_axle_forward, TwinEngineDrivingAxle *p_axle_backward):p_axle_forward_(p_axle_forward),p_axle_backward_(p_axle_backward){
 }
 //----------------
+void TwoAxleSharpDriftCar::GoSharpOrDrift(bool is_forward, bool is_right, bool is_sharp){
+  if( is_forward ? (is_sharp ? is_right : !is_right) : (is_sharp ? !is_right : is_right) ){
+    this->p_axle_backward_->GoRightTankStyle();
+  }else{
+    this->p_axle_backward_->GoLeftTankStyle();    
+  }
+}
+//----------------
 void TwoAxleSharpDriftCar::SwitchMode(DrivingMode mode, bool try_activate){ //Указанный режим попытаться активировать или деактивировать
   if(this->active_mode_ == (try_activate ? DrivingMode::STANDART : mode) ){ //Активировать можно только если сейчас STANDART, деактивировать только себя
       this->active_mode_ = try_activate ? mode : DrivingMode::STANDART;
