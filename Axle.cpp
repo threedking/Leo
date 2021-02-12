@@ -17,18 +17,18 @@ TwinEngineDrivingAxle::~TwinEngineDrivingAxle(){
   }  
 }
 //----------------
-void TwinEngineDrivingAxle::SetTurn(Turn new_turn){
+void TwinEngineDrivingAxle::SetTurn(TurnDirection new_turn){
   this->turn_=new_turn;
   this->SetSpeed(this->speed_);
 }
 //----------------
 void TwinEngineDrivingAxle::SetSpeed(uint8_t new_speed){  
-  this->p_motor_left_->SetSpeed(this->turn_ == Turn::LEFT ? abs(static_cast<int>(new_speed)*this->speed_difference_in_turn_)/100 : new_speed);
-  this->p_motor_right_->SetSpeed(this->turn_ == Turn::RIGHT ? abs(static_cast<int>(new_speed)*this->speed_difference_in_turn_)/100 : new_speed);
+  this->p_motor_left_->SetSpeed(this->turn_ == TurnDirection::LEFT ? abs(static_cast<int>(new_speed)*this->speed_difference_in_turn_)/100 : new_speed);
+  this->p_motor_right_->SetSpeed(this->turn_ == TurnDirection::RIGHT ? abs(static_cast<int>(new_speed)*this->speed_difference_in_turn_)/100 : new_speed);
   if(this->speed_difference_in_turn_ < 0){//Если разница скоростей в повороте отрицательная, то обратить направление внутреннего колеса
-    if(this->turn_ == Turn::LEFT){
+    if(this->turn_ == TurnDirection::LEFT){
       this->p_motor_left_->SetDirection(this->is_going_forward_ ? false : true, this->is_going_forward_ ? true : false);
-    }else if(this->turn_ == Turn::RIGHT){
+    }else if(this->turn_ == TurnDirection::RIGHT){
       this->p_motor_right_->SetDirection(this->is_going_forward_ ? false : true, this->is_going_forward_ ? true : false);
     }
   }
@@ -58,55 +58,55 @@ void TwinEngineDrivingAxle::GoRight(){
 void TwinEngineDrivingAxle::GoLeftTankStyle(){
   this->p_motor_left_->GoBackward();
   this->p_motor_right_->GoForward();
-  this->SetTurn(Turn::FRONT);
+  this->SetTurn(TurnDirection::STRAIGHT);
 }
 //----------------
 void TwinEngineDrivingAxle::GoRightTankStyle(){
   this->p_motor_left_->GoForward();
   this->p_motor_right_->GoBackward();
-  this->SetTurn(Turn::FRONT);
+  this->SetTurn(TurnDirection::STRAIGHT);
 }
 //----------------
 void TwinEngineDrivingAxle::GoForward(){
   is_going_forward_=true;
   this->p_motor_left_->GoForward();
   this->p_motor_right_->GoForward();
-  this->SetTurn(Turn::FRONT);
+  this->SetTurn(TurnDirection::STRAIGHT);
 }
 //----------------
 void TwinEngineDrivingAxle::GoBackward(){
   is_going_forward_=false;
   this->p_motor_left_->GoBackward();
   this->p_motor_right_->GoBackward();
-  this->SetTurn(Turn::FRONT);
+  this->SetTurn(TurnDirection::STRAIGHT);
 }
 //----------------
 void TwinEngineDrivingAxle::GoForwardRight(){  
   is_going_forward_=true;
   this->p_motor_left_->GoForward();
   this->p_motor_right_->GoForward();
-  this->SetTurn(Turn::RIGHT);
+  this->SetTurn(TurnDirection::RIGHT);
 }
 //----------------
 void TwinEngineDrivingAxle::GoForwardLeft(){
   is_going_forward_=true;
   this->p_motor_left_->GoForward();
   this->p_motor_right_->GoForward(); 
-  this->SetTurn(Turn::LEFT);
+  this->SetTurn(TurnDirection::LEFT);
 }
 //----------------
 void TwinEngineDrivingAxle::GoBackwardRight(){  
   is_going_forward_=false;
   this->p_motor_left_->GoBackward();
   this->p_motor_right_->GoBackward();
-  this->SetTurn(Turn::RIGHT); 
+  this->SetTurn(TurnDirection::RIGHT); 
 }
 //----------------
 void TwinEngineDrivingAxle::GoBackwardLeft(){
   is_going_forward_=false;
   this->p_motor_left_->GoBackward();
   this->p_motor_right_->GoBackward();  
-  this->SetTurn(Turn::LEFT);
+  this->SetTurn(TurnDirection::LEFT);
 }
 //----------------
 //----------------

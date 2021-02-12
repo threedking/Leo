@@ -67,15 +67,25 @@ class TwoAxleSharpDriftCar: public ICar{
     IAxle *p_axle_forward_=NULL;
     TwinEngineDrivingAxle *p_axle_backward_=NULL;
     
-    enum class DrivingMode : uint8_t{
-      STANDART,
-      SHARP,
-      DRIFT,
+    enum class DrivingMode : uint8_t{ 
+      STANDART,         //Без трюков
+      SHARP,            //Усиленные повороты, резкие развороты
+      DRIFT,            //Дрифт
       SHARP_and_DRIFT
     };
 
     DrivingMode active_mode_ = DrivingMode::STANDART;
 
+    TurnDirection stunt_direction_ = TurnDirection::STRAIGHT; //Помнить последнее направление для совершения правильного трюка
+    DriveDirection readiness_to_stunt_ = DriveDirection::STOPPED; //Если стоппед, то не стантим, иначе готовы стантить в направлении движения
+    bool is_sharping_ = false, is_drifting_ = false; //Трюкачим ли сейчас()
+
+
+    bool StuntControllerFB(DriveDirection new_readiness_to_stunt); // Вперед/назад
+    bool StuntControllerS(); //Стоп
+    bool StuntControllerLR(TurnDirection new_stunt_direction); //Влево/Вправо
+    bool StuntControllerD(TurnDirection new_stunt_direction, DriveDirection new_readiness_to_stunt); //По диагонали - любой газ + любой поворот
+    
     /*    
     КАК было:
     Если хотим повернуть влево, то
@@ -90,7 +100,7 @@ class TwoAxleSharpDriftCar: public ICar{
     Он будет проверять режим вождения и от этого запускать нужное поведение. Нет. Он будет вызывать метод по указателю.
 
     Нужны методы реального поведения. Но не для всех: стоп, назад и вперед будут выполнять свои задачи, щелкая состояние
-    Нужны методы дрифта в стороны и резких поворотов в стороны
+    Нужны методы дрифта в стороны и резких поворотов в стороны - хватит одного
 
     Вариант для резкого ИЛИ дрифтового режима:
     Если была нажата команда вперед
@@ -106,7 +116,7 @@ class TwoAxleSharpDriftCar: public ICar{
     
     */
 
-    void SwitchMode(DrivingMode mode, bool try_activate);//Указанный режим попытаться активировать или деактивировать
+    bool SwitchMode(DrivingMode mode, bool try_activate);//Указанный режим попытаться активировать или деактивировать, вернет успех
     void GoSharpOrDrift(bool is_forward, bool is_right, bool is_sharp);
     
   public:
@@ -117,9 +127,12 @@ class TwoAxleSharpDriftCar: public ICar{
     void DeactivateDrift();
     void ActivateSharp();
     void DeactivateSharp();
+    void ActivateSharpAndDrift();
+    void DeactivateSharpAndDrift();
     
     bool IsDriftModeOn();
     bool IsSharpModeOn();
+    bool IsSharpAndDriftModeOn();
 
     void SetSpeedDifferenceInTurnBackAxle(int8_t new_speed_difference_in_turn);
     
