@@ -65,7 +65,7 @@ class TwoAxleCar: public ICar{
 class TwoAxleSharpDriftCar: public ICar{
   protected:
     IAxle *p_axle_forward_=NULL;
-    TwinEngineDrivingAxle *p_axle_backward_=NULL;
+    TwinEngineTurningDrivingAxle *p_axle_backward_=NULL;
     
     enum class DrivingMode : uint8_t{ 
       STANDART,         //Без трюков

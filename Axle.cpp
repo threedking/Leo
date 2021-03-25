@@ -1,28 +1,91 @@
 #include "Axle.h"
 //----------------
 TwinEngineDrivingAxle::TwinEngineDrivingAxle(IArduinoMotor *p_motor_left,IArduinoMotor *p_motor_right): p_motor_left_(p_motor_left), p_motor_right_(p_motor_right){  
-  if(p_motor_left_==NULL || p_motor_right_==NULL){    
+  if(this->p_motor_left_==NULL || this->p_motor_right_==NULL){    
     Serial.println("Motor pointer set NULL");
   }
 }
 //----------------
 TwinEngineDrivingAxle::~TwinEngineDrivingAxle(){
-  if(p_motor_left_!=NULL){
-    delete p_motor_left_;
-    p_motor_left_=NULL;
+  if(this->p_motor_left_ != NULL){
+    delete this->p_motor_left_;
+    this->p_motor_left_ = NULL;
   }  
-  if(p_motor_right_!=NULL){
-    delete p_motor_right_;
-    p_motor_right_=NULL;
+  if(this->p_motor_right_ != NULL){
+    delete this->p_motor_right_;
+    this->p_motor_right_ = NULL;
   }  
 }
 //----------------
-void TwinEngineDrivingAxle::SetTurn(TurnDirection new_turn){
+void TwinEngineDrivingAxle::GoLeftTankStyle(){
+  this->p_motor_left_->GoBackward();
+  this->p_motor_right_->GoForward();
+}
+//----------------
+void TwinEngineDrivingAxle::GoRightTankStyle(){
+  this->p_motor_left_->GoForward();
+  this->p_motor_right_->GoBackward();
+}
+//----------------
+void TwinEngineDrivingAxle::Stop(){
+  this->p_motor_left_->Stop();
+  this->p_motor_right_->Stop();
+}
+//----------------
+void TwinEngineDrivingAxle::GoLeft(){
+  this->Stop();
+}
+//----------------
+void TwinEngineDrivingAxle::GoRight(){
+  this->Stop();
+}
+//----------------
+void TwinEngineDrivingAxle::GoForward(){
+  this->p_motor_left_->GoForward();
+  this->p_motor_right_->GoForward();
+}
+//----------------
+void TwinEngineDrivingAxle::GoBackward(){
+  this->p_motor_left_->GoBackward();
+  this->p_motor_right_->GoBackward();
+}
+//----------------
+void TwinEngineDrivingAxle::GoForwardRight(){
+  this->p_motor_left_->GoForward();
+  this->p_motor_right_->GoForward();
+}
+//----------------
+void TwinEngineDrivingAxle::GoForwardLeft(){
+  this->p_motor_left_->GoForward();
+  this->p_motor_right_->GoForward(); 
+}
+//----------------
+void TwinEngineDrivingAxle::GoBackwardRight(){
+  this->p_motor_left_->GoBackward();
+  this->p_motor_right_->GoBackward();
+}
+//----------------
+void TwinEngineDrivingAxle::GoBackwardLeft(){
+  this->p_motor_left_->GoBackward();
+  this->p_motor_right_->GoBackward();  
+}
+//----------------
+void TwinEngineDrivingAxle::SetSpeed(uint8_t new_speed){  
+  this->p_motor_left_->SetSpeed(new_speed);
+  this->p_motor_right_->SetSpeed(new_speed);
+}
+//----------------
+//----------------
+//----------------
+TwinEngineTurningDrivingAxle::TwinEngineTurningDrivingAxle(IArduinoMotor *p_motor_left,IArduinoMotor *p_motor_right): TwinEngineDrivingAxle(p_motor_left, p_motor_right){
+}
+//----------------
+void TwinEngineTurningDrivingAxle::SetTurn(TurnDirection new_turn){
   this->turn_=new_turn;
   this->SetSpeed(this->speed_);
 }
 //----------------
-void TwinEngineDrivingAxle::SetSpeed(uint8_t new_speed){  
+void TwinEngineTurningDrivingAxle::SetSpeed(uint8_t new_speed){  
   this->p_motor_left_->SetSpeed(this->turn_ == TurnDirection::LEFT ? abs(static_cast<int>(new_speed)*this->speed_difference_in_turn_)/100 : new_speed);
   this->p_motor_right_->SetSpeed(this->turn_ == TurnDirection::RIGHT ? abs(static_cast<int>(new_speed)*this->speed_difference_in_turn_)/100 : new_speed);
   if(this->speed_difference_in_turn_ < 0){//Если разница скоростей в повороте отрицательная, то обратить направление внутреннего колеса
@@ -34,79 +97,92 @@ void TwinEngineDrivingAxle::SetSpeed(uint8_t new_speed){
   }
 }
 //----------------
-void TwinEngineDrivingAxle::SetSpeedDifferenceInTurn(int8_t new_speed_difference_in_turn){
+void TwinEngineTurningDrivingAxle::SetSpeedDifferenceInTurn(int8_t new_speed_difference_in_turn){
   this->speed_difference_in_turn_=constrain(new_speed_difference_in_turn,-100,100);  
   this->SetSpeed(this->speed_);
 }
 //----------------
-void TwinEngineDrivingAxle::Stop(){  
+void TwinEngineTurningDrivingAxle::GoLeftTankStyle(){
+  TwinEngineDrivingAxle::GoLeftTankStyle();
+  this->SetTurn(TurnDirection::STRAIGHT);
+}
+//----------------
+void TwinEngineTurningDrivingAxle::GoRightTankStyle(){
+  TwinEngineDrivingAxle::GoRightTankStyle();
+  this->SetTurn(TurnDirection::STRAIGHT);
+}
+//----------------
+void TwinEngineTurningDrivingAxle::Stop(){
   is_going_forward_=true;
   this->p_motor_left_->Stop();
   this->p_motor_right_->Stop();
 }
 //----------------
-void TwinEngineDrivingAxle::GoLeft(){
+void TwinEngineTurningDrivingAxle::GoLeft(){
   is_going_forward_=true;
-  this->GoLeftTankStyle();
+  this->Stop();
 }
 //----------------
-void TwinEngineDrivingAxle::GoRight(){
+void TwinEngineTurningDrivingAxle::GoRight(){
   is_going_forward_=true;
-  this->GoRightTankStyle();
+  this->Stop();
 }
 //----------------
-void TwinEngineDrivingAxle::GoLeftTankStyle(){
-  this->p_motor_left_->GoBackward();
-  this->p_motor_right_->GoForward();
-  this->SetTurn(TurnDirection::STRAIGHT);
-}
-//----------------
-void TwinEngineDrivingAxle::GoRightTankStyle(){
-  this->p_motor_left_->GoForward();
-  this->p_motor_right_->GoBackward();
-  this->SetTurn(TurnDirection::STRAIGHT);
-}
-//----------------
-void TwinEngineDrivingAxle::GoForward(){
+void TwinEngineTurningDrivingAxle::GoForward(){
   is_going_forward_=true;
   this->p_motor_left_->GoForward();
   this->p_motor_right_->GoForward();
   this->SetTurn(TurnDirection::STRAIGHT);
 }
 //----------------
-void TwinEngineDrivingAxle::GoBackward(){
+void TwinEngineTurningDrivingAxle::GoBackward(){
   is_going_forward_=false;
   this->p_motor_left_->GoBackward();
   this->p_motor_right_->GoBackward();
   this->SetTurn(TurnDirection::STRAIGHT);
 }
 //----------------
-void TwinEngineDrivingAxle::GoForwardRight(){  
+void TwinEngineTurningDrivingAxle::GoForwardRight(){  
   is_going_forward_=true;
   this->p_motor_left_->GoForward();
   this->p_motor_right_->GoForward();
   this->SetTurn(TurnDirection::RIGHT);
 }
 //----------------
-void TwinEngineDrivingAxle::GoForwardLeft(){
+void TwinEngineTurningDrivingAxle::GoForwardLeft(){
   is_going_forward_=true;
   this->p_motor_left_->GoForward();
   this->p_motor_right_->GoForward(); 
   this->SetTurn(TurnDirection::LEFT);
 }
 //----------------
-void TwinEngineDrivingAxle::GoBackwardRight(){  
+void TwinEngineTurningDrivingAxle::GoBackwardRight(){  
   is_going_forward_=false;
   this->p_motor_left_->GoBackward();
   this->p_motor_right_->GoBackward();
   this->SetTurn(TurnDirection::RIGHT); 
 }
 //----------------
-void TwinEngineDrivingAxle::GoBackwardLeft(){
+void TwinEngineTurningDrivingAxle::GoBackwardLeft(){
   is_going_forward_=false;
   this->p_motor_left_->GoBackward();
   this->p_motor_right_->GoBackward();  
   this->SetTurn(TurnDirection::LEFT);
+}
+//----------------
+//----------------
+//----------------
+TwinEngineTankStyleTurningDrivingAxle::TwinEngineTankStyleTurningDrivingAxle(IArduinoMotor *p_motor_left,IArduinoMotor *p_motor_right): TwinEngineTurningDrivingAxle(p_motor_left, p_motor_right){
+}
+//----------------
+void TwinEngineTankStyleTurningDrivingAxle::GoLeft(){
+  is_going_forward_=true;
+  this->GoLeftTankStyle();
+}
+//----------------
+void TwinEngineTankStyleTurningDrivingAxle::GoRight(){
+  is_going_forward_=true;
+  this->GoRightTankStyle();
 }
 //----------------
 //----------------

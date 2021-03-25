@@ -43,6 +43,27 @@ class TwinEngineDrivingAxle: public IAxle{
     IArduinoMotor *p_motor_right_=NULL;    
 
     uint8_t speed_=255;
+  public:
+    TwinEngineDrivingAxle(IArduinoMotor *p_motor_left,IArduinoMotor *p_motor_right);
+    virtual ~TwinEngineDrivingAxle();
+    
+    virtual void GoLeftTankStyle();
+    virtual void GoRightTankStyle();
+    
+    virtual void Stop() override;
+    virtual void GoLeft() override;
+    virtual void GoRight() override;
+    virtual void GoForward() override;
+    virtual void GoBackward() override;
+    virtual void GoForwardRight() override;
+    virtual void GoForwardLeft() override;
+    virtual void GoBackwardRight() override;
+    virtual void GoBackwardLeft() override;
+    virtual void SetSpeed(uint8_t new_speed) override;
+};
+//----------------
+class TwinEngineTurningDrivingAxle: public TwinEngineDrivingAxle{ //Поворачивает разницей в скоростей колес. На GoLeft GoRight стоит.
+  protected:   
     int8_t speed_difference_in_turn_=25;//Процент(-100 - 100) отношения скорости внутреннего колеса к внешнему в повороте. Если <0, то направление противоположное    
     bool is_going_forward_=true;//Запоминаем направление оси для отрицательной разницы скорости в повороте
     
@@ -50,24 +71,34 @@ class TwinEngineDrivingAxle: public IAxle{
 
     void SetTurn(TurnDirection new_turn);
   public:
-    TwinEngineDrivingAxle(IArduinoMotor *p_motor_left,IArduinoMotor *p_motor_right);
-    virtual ~TwinEngineDrivingAxle();
-    
-    void SetSpeed(uint8_t new_speed) override;
+    TwinEngineTurningDrivingAxle(IArduinoMotor *p_motor_left,IArduinoMotor *p_motor_right);
+    virtual ~TwinEngineTurningDrivingAxle(){}
+        
     void SetSpeedDifferenceInTurn(int8_t new_speed_difference_in_turn);
 
-    void GoLeftTankStyle();
-    void GoRightTankStyle();
+    virtual void GoLeftTankStyle() override;
+    virtual void GoRightTankStyle() override;
     
-    void Stop() override;
-    void GoLeft() override;
-    void GoRight() override;
-    void GoForward() override;
-    void GoBackward() override;
-    void GoForwardRight() override;
-    void GoForwardLeft() override;
-    void GoBackwardRight() override;
-    void GoBackwardLeft() override;
+    virtual void Stop() override;
+    virtual void GoLeft() override;
+    virtual void GoRight() override;
+    virtual void GoForward() override;
+    virtual void GoBackward() override;
+    virtual void GoForwardRight() override;
+    virtual void GoForwardLeft() override;
+    virtual void GoBackwardRight() override;
+    virtual void GoBackwardLeft() override;
+    virtual void SetSpeed(uint8_t new_speed) override;
+};
+//----------------
+class TwinEngineTankStyleTurningDrivingAxle: public TwinEngineTurningDrivingAxle{ //На GoLeft GoRight работает как танк
+  protected:   
+  public:
+    TwinEngineTankStyleTurningDrivingAxle(IArduinoMotor *p_motor_left,IArduinoMotor *p_motor_right);
+    virtual ~TwinEngineTankStyleTurningDrivingAxle(){}
+    
+    virtual void GoLeft() override;
+    virtual void GoRight() override;
 };
 //----------------
 class ServoSteeringAxle: public IAxle{
@@ -83,16 +114,16 @@ class ServoSteeringAxle: public IAxle{
     ServoSteeringAxle(uint8_t new_pin_steering_servo, int16_t new_min_angle, int16_t new_max_angle);
     virtual ~ServoSteeringAxle();
 
-    void Stop() override;
-    void GoLeft() override;
-    void GoRight() override;
-    void GoForward() override;
-    void GoBackward() override;
-    void GoForwardRight() override;
-    void GoForwardLeft() override;
-    void GoBackwardRight() override;
-    void GoBackwardLeft() override;
-    void SetSpeed(uint8_t new_speed) override;
+    virtual void Stop() override;
+    virtual void GoLeft() override;
+    virtual void GoRight() override;
+    virtual void GoForward() override;
+    virtual void GoBackward() override;
+    virtual void GoForwardRight() override;
+    virtual void GoForwardLeft() override;
+    virtual void GoBackwardRight() override;
+    virtual void GoBackwardLeft() override;
+    virtual void SetSpeed(uint8_t new_speed) override;
 
     void TurnStraight();
     void TurnMaxLeft();
